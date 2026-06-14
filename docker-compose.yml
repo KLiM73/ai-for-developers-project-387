@@ -1,0 +1,9 @@
+services:
+  app:
+    build: .
+    ports:
+      - "3000:80"
+    environment:
+      PORT: 80
+    volumes:
+      - ./backend/storage:/rails/storage

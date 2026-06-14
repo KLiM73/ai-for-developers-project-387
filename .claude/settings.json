@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "mantine": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@mantine/mcp-server"
+      ]
+    }
+  },
+  "enabledPlugins": {
+    "playwright@claude-plugins-official": true
+  }
+}
