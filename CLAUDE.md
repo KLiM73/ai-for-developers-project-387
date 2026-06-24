@@ -2,6 +2,13 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Commit conventions
+
+Use [Conventional Commits](https://www.conventionalcommits.org/) for all commit messages
+(`feat:`, `fix:`, `chore:`, `ci:`, `docs:`, `refactor:`, etc.). This is required: the repo uses
+release-please (`.github/workflows/release-please.yml`), which derives version bumps and the
+changelog from the commit history.
+
 ## Project overview
 
 Calendar booking system (Hexlet "AI for Developers" course project). The repo contains three artifacts:
