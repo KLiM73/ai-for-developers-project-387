@@ -1,0 +1,62 @@
+name: Lighthouse
+
+on:
+  schedule:
+    - cron: '0 2 * * *'        # 02:00 UTC ночью (≈05:00 MSK); время в UTC
+  workflow_dispatch:            # ручной запуск (кнопка Run workflow)
+    inputs:
+      perf_threshold:
+        description: 'Минимальный балл performance/accessibility (0..1), ниже — создать issue'
+        default: '0.9'
+
+permissions:
+  contents: read
+  issues: write                 # для авто-issue через GITHUB_TOKEN
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Lighthouse CI
+        run: npm install -g @lhci/cli@0.14.x
+
+      - name: Build and start app (Docker)
+        run: docker compose up --build -d
+
+      - name: Wait for app health
+        run: |
+          for i in $(seq 1 60); do
+            curl -sf http://localhost:3000/up && exit 0
+            echo "waiting for app... ($i)"; sleep 5
+          done
+          echo "::error::app did not become healthy"; docker compose logs; exit 1
+
+      - name: Run Lighthouse CI
+        run: lhci autorun --config=lighthouserc.json
+        continue-on-error: true   # отчёт собираем даже если assert не прошёл
+
+      - name: Report (summary + issue on regression)
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PERF_THRESHOLD: ${{ github.event.inputs.perf_threshold || '0.9' }}
+        run: node .github/scripts/lighthouse-report.mjs
+
+      - name: Upload Lighthouse report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-report
+          path: .lighthouseci/
+          retention-days: 14
+
+      - name: Stop app
+        if: always()
+        run: docker compose down
