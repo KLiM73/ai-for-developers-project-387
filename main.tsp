@@ -131,7 +131,7 @@ model CreateBookingRequest {
 // Admin namespace — /admin/* (no authentication required by project design)
 // ---------------------------------------------------------------------------
 
-@route("/api/admin")
+@route("/api/v1/admin")
 @tag("Admin")
 namespace CalendarBooking.Admin {
   @doc("Admin operations on event types")
@@ -162,7 +162,7 @@ namespace CalendarBooking.Admin {
 // Guest namespace — event-type discovery and slot availability
 // ---------------------------------------------------------------------------
 
-@route("/api/event-types")
+@route("/api/v1/event-types")
 @tag("Guest")
 namespace CalendarBooking.GuestEventTypes {
   @doc("Guest-accessible event type operations")
@@ -191,7 +191,7 @@ namespace CalendarBooking.GuestEventTypes {
 // Guest namespace — booking creation (separate from /event-types to avoid path conflict)
 // ---------------------------------------------------------------------------
 
-@route("/api/bookings")
+@route("/api/v1/bookings")
 @tag("Guest")
 namespace CalendarBooking.GuestBookings {
   @doc("Guest booking creation")

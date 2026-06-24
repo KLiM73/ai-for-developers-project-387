@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  scope "/api" do
+  scope "/api/v1" do
     get  "/event-types",           to: "event_types#index"
     get  "/event-types/:id/slots", to: "slots#index"
     post "/bookings",              to: "bookings#create"
